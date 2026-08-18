@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import reshaKoju from '../assets/subscriptions/ReshaKoju.jpg';
 import jerry from '../assets/subscriptions/Jerry.jpg';
+import sanyam from '../assets/subscriptions/Sanyam.jpg';
 
 const mockData = [
     { id: 1, name: 'Resha Koju', image: reshaKoju },
     { id: 2, name: 'Jerry', image: jerry },
     { id: 3, name: 'Resha Doe', image: reshaKoju },
     { id: 4, name: 'Jerry Smith', image: jerry },
+    { id: 5, name: 'Jerry Doe', image: reshaKoju },
+    { id: 6, name: 'Sanyam', image: sanyam },
+    {id: 7, name: 'Sanyam Doe', image: sanyam},
+    {id: 8, name: 'Sanyam Smith', image: sanyam},
+    {id: 9, name: 'Resha Smith', image: reshaKoju},
+    {id: 10, name: 'Jerry Koju', image: jerry},
+
 ];
 
 //Sidebar Component
@@ -190,7 +198,7 @@ export default function Sidebar({ isCollapsed }) {
 const styles = {
     sidebar: {
         backgroundColor: '#0f0f0f',
-        height: '500px', // Subtracts Navbar height
+        height: '800px', // Subtracts Navbar height
         overflow: 'auto',
         position: 'sticky',
         top: '56px',
