@@ -11,7 +11,7 @@ function App() {
 
   return (
     <div className="app">
-      <Navbar/>
+      <Navbar onToggleSidebar={() => {}} />
       <Sidebar isCollapsed={false} />
     </div>
   )
