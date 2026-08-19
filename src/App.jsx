@@ -36,6 +36,9 @@ function App() {
         {/* <main style={styles.mainContent}>
           <Video video={sampleVideo} />
         </main> */}
+
+        
+
       </div>
     </div>
   )
