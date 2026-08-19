@@ -1,3 +1,7 @@
+.suggestion-item:hover {
+  background-color: #333333;
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

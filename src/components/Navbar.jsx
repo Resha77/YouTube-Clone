@@ -1,19 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import youtubeLogo from '../assets/youtube-logo-icon.webp';
 import resha from '../assets/subscriptions/ReshaKoju.jpg';
+import { initializeTrie } from '../utils/TrieSearch';
 
 
 export default function Navbar({ onToggleSidebar }) {
+    // searchQuery stores the text the user types into the search box.
     const [searchQuery, setSearchQuery] = useState('');
 
+    // suggestions holds the matching search results from the trie.
+    const [suggestions, setSuggestions] = useState([]);
+
+    // showSuggestions controls whether the dropdown is visible.
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
+    // trie stores the search data structure used for fast prefix matching.
+    const [trie, setTrie] = useState(null);
+
+    // Create the trie once when the navbar is loaded.
+    // This lets the app search suggestions without scanning a huge list each time.
+    useEffect(() => {
+        const initializedTrie = initializeTrie();
+        setTrie(initializedTrie);
+    }, []);
+
+    // When the user types, update the keyword and find matching suggestions.
+    const handleInputChange = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+
+        if (trie && query.length > 0) {
+            const results = trie.search(query, 5);
+            setSuggestions(results);
+            setShowSuggestions(true);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    };
+
+    // When a suggestion is clicked, fill the search field and hide the dropdown.
+    const handleSuggestionClick = (suggestion) => {
+        setSearchQuery(suggestion.title);
+        setShowSuggestions(false);
+        console.log('Selected video:', suggestion);
+    };
+
+    // Handle the form submit, usually when the user presses Enter or clicks search.
     const handleSearch = (e) => {
         e.preventDefault();
+        setShowSuggestions(false);
         console.log('Search query:', searchQuery);
     };
 
     return (
         <header style={styles.navbar}>
-            {/* Left Section: Menu Toggle and Logo */}
+            {/* Left side: hamburger menu and YouTube logo */}
             <div style={styles.leftSection}>
                 <button onClick={onToggleSidebar} style={styles.iconButton} aria-label="Toggle Sidebar">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" style={styles.menuIcon}>
@@ -25,14 +67,16 @@ export default function Navbar({ onToggleSidebar }) {
                 </div>
             </div>
 
-            {/* Middle Section: Search Bar */}
+            {/* Middle section: includes the search field and suggestion dropdown */}
             <form onSubmit={handleSearch} style={styles.centerSection}>
                 <div style={styles.searchContainer}>
                     <input
                         type="text"
                         placeholder="Search"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={handleInputChange}
+                        onFocus={() => searchQuery && suggestions.length > 0 && setShowSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                         style={styles.searchInput}
                     />
                     <button type="submit" style={styles.searchButton} aria-label="Search">
@@ -40,10 +84,31 @@ export default function Navbar({ onToggleSidebar }) {
                             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                         </svg>
                     </button>
+                    
+                    {/* Show a list of matching searches below the input when the user types. */}
+                    {showSuggestions && suggestions.length > 0 && (
+                        <div style={styles.suggestionsDropdown}>
+                            {suggestions.map((suggestion) => (
+                                <div
+                                    key={suggestion.id}
+                                    className="suggestion-item"
+                                    style={styles.suggestionItem}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                >
+                                    <svg viewBox="0 0 24 24" style={styles.suggestionIcon}>
+                                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                                <div style={styles.suggestionText}>
+                                    <div style={styles.suggestionTitle}>{suggestion.title}</div>
+                                </div>
+                            </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </form>
 
-            {/* Right Section: Actions & Profile */}
+            {/* Right side: buttons and user profile image */}
             <div style={styles.rightSection}>
                 <button style={styles.iconButton} aria-label="Create">
                     <svg viewBox="0 0 24 24" style={styles.icon}>
@@ -77,6 +142,31 @@ const styles = {
         top: 0,
         zIndex: 1000,
         boxSizing: 'border-box',
+    },
+    suggestionsDropdown: {
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        top: '100%',
+        left: 250,
+        right: 230,
+        backgroundColor: '#212121',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        zIndex: 1001,
+    },
+    suggestionItem: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '10px 16px',
+        color: '#ffffff',
+        cursor: 'pointer',
+    },
+    suggestionIcon: {
+        width: '20px',
+        height: '20px',
+        fill: '#aaaaaa',
     },
     leftSection: {
         display: 'flex',

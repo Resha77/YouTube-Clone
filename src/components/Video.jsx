@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 
 export default function Video({ video }) {
+    // likes tracks the current number of likes shown on the video.
     const [likes, setLikes] = useState(video?.likes || 0);
+
+    // isLiked tells us whether the current user has already liked this video.
     const [isLiked, setIsLiked] = useState(false);
 
+    // Toggle the like status and update the like count accordingly.
     const handleLike = () => {
         setIsLiked(!isLiked);
         setLikes(prev => isLiked ? prev - 1 : prev + 1);
     };
 
+    // If no video information is passed in, show a simple fallback message.
     if (!video) return <div style={styles.notFound}>No video selected</div>;
 
     return (
         <div style={styles.container}>
-            {/* Main Video Player */}
+            {/* The actual video player. It uses the video's URL and poster image. */}
             <div style={styles.videoWrapper}>
                 <video
                     src={video.url}
@@ -24,11 +29,11 @@ export default function Video({ video }) {
                 />
             </div>
 
-            {/* Video Meta Info */}
+            {/* Title and metadata section for the video. */}
             <h1 style={styles.title}>{video.title}</h1>
 
             <div style={styles.metaRow}>
-                {/* Channel Info */}
+                {/* Channel row: avatar, name, subscriber count, and subscribe button. */}
                 <div style={styles.channelInfo}>
                     <img 
                         src={video.channelAvatar || 'https://via.placeholder.com/40'} 
@@ -42,7 +47,7 @@ export default function Video({ video }) {
                     <button style={styles.subscribeBtn}>Subscribe</button>
                 </div>
 
-                {/* Actions (Like, Share, etc.) */}
+                {/* Action buttons like, share, and save. */}
                 <div style={styles.actionsGroup}>
                     <button onClick={handleLike} style={{ ...styles.actionBtn, backgroundColor: isLiked ? '#3ea6ff' : '#272727', color: isLiked ? '#0f0f0f' : '#ffffff' }}>
                         👍 {likes}
@@ -56,7 +61,7 @@ export default function Video({ video }) {
                 </div>
             </div>
 
-            {/* Description Box */}
+            {/* Description box that shows stats and the full video summary. */}
             <div style={styles.descriptionBox}>
                 <div style={styles.stats}>
                     <span>{video.views || '0'} views</span>
