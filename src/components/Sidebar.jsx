@@ -3,6 +3,8 @@ import reshaKoju from '../assets/subscriptions/ReshaKoju.jpg';
 import jerry from '../assets/subscriptions/Jerry.jpg';
 import sanyam from '../assets/subscriptions/Sanyam.jpg';
 
+// Demo subscription list used until real data is connected.
+// This simulates users/channels that appear in the sidebar.
 const mockData = [
     { id: 1, name: 'Resha Koju', image: reshaKoju },
     { id: 2, name: 'Jerry', image: jerry },
@@ -17,21 +19,23 @@ const mockData = [
 
 ];
 
-//Sidebar Component
+// Sidebar component
+// It receives isCollapsed from App.jsx and decides whether to show a full or compact layout.
 export default function Sidebar({ isCollapsed }) {
-    /*isCollapesed is a boolean prop that determines whether the sidebar is collapsed or expanded.
-    The prop is passed down from the parent component (App.jsx).
+    /* isCollapsed is a boolean prop that determines whether the sidebar is collapsed or expanded.
+       The prop is passed down from the parent component (App.jsx).
     */
 
+    // subscriptions stores the list of channels shown in the "Subscriptions" section.
     const [subscriptions, setSubscriptions] = useState([]);
-    //State to hold subscription data fethced from the backend. Initially set to an empty array.
 
-
+    // Simulate loading data once when the component mounts.
     useEffect(() => {
         setSubscriptions(mockData);
     }, []);
 
-    //Main Navigation Items
+    // Top navigation items shown in the sidebar.
+    // Each item contains an icon and a label like Home, Shorts, and Subscriptions.
     const mainNav = [
         {
             icon: (
@@ -63,7 +67,7 @@ export default function Sidebar({ isCollapsed }) {
         },
     ];
 
-    //Secondary Navigation Items
+    // Secondary menu items for your account and video library.
     const secondaryNav = [
         {
             icon: (
@@ -107,7 +111,7 @@ export default function Sidebar({ isCollapsed }) {
         },
     ];
 
-    //Tertiary Navigation Items
+    // Build a dynamic list of subscriptions from the mock data.
     const tertiaryNav = mockData.map((sub) => ({
         icon: (
             <img src={sub.image}
@@ -120,8 +124,8 @@ export default function Sidebar({ isCollapsed }) {
 
     return (
         <aside style={{ ...styles.sidebar, width: isCollapsed ? '72px' : '240px' }}>
-            {/* The Spread Operator is used here to apply the sidebar styles and override the width based on the isCollapsed prop */}
-            {/* Ternary Operator selects the width according to the isCollapsed prop */}
+            {/* The spread operator keeps the default sidebar styles and overrides only the width.
+                A ternary operator is used to switch between the collapsed and expanded widths. */}
 
             <div style={styles.section}>
                 {mainNav.map((item, index) => (
@@ -148,12 +152,12 @@ export default function Sidebar({ isCollapsed }) {
 
             <hr style={styles.divider} />
 
-            {/* Secondary Section (Hidden when collapsed) */}
+            {/* Secondary section only shows when the sidebar is expanded. */}
             {!isCollapsed && (
                 <div style={styles.section}>
                     <h3 style={styles.sectionHeader}>You</h3>
                     {secondaryNav.map((item, index) => (
-                        //.map is used to iterate over the secondaryNav array and render each item as a div. Each div contains an icon and a label.
+                        // .map() loops through the array and renders one row per item.
 
                         <div key={index} style={{
                             ...styles.navItem,
