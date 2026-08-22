@@ -18,16 +18,7 @@ function App() {
   const videos = [
     {
       id: 1,
-      title: 'React & Vite Full Project Walkthrough',
-      thumbnail: heroImg,
-      channelName: 'Code Channel',
-      channelAvatar: reactLogo,
-      views: '1.2M',
-      uploadedAt: '2 days ago',
-    },
-    {
-      id: 2,
-      title: 'A quiet afternoon in the studio',
+      title: 'Jerry Poked My Eye With Her Nail Today!',
       thumbnail: jerryThumbnail,
       channelName: 'Jerry Doe',
       channelAvatar: jerryThumbnail,
@@ -35,8 +26,8 @@ function App() {
       uploadedAt: '5 days ago',
     },
     {
-      id: 3,
-      title: 'Build better habits with a simple system',
+      id: 2,
+      title: 'A Day at Kamalpokhari',
       thumbnail: reshaThumbnail,
       channelName: 'Resha Koju',
       channelAvatar: reshaThumbnail,
@@ -44,8 +35,8 @@ function App() {
       uploadedAt: '1 week ago',
     },
     {
-      id: 4,
-      title: 'What I learned from shipping my first app',
+      id: 3,
+      title: 'Another Day at Kamalpokhari',
       thumbnail: sanyamThumbnail,
       channelName: 'Sanyam',
       channelAvatar: sanyamThumbnail,

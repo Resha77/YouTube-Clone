@@ -26,6 +26,8 @@
 
 .video-preview__title {
     font-size: 16px;
+    margin: 0;
+    padding: 0;
 }
 
 .video-preview__channel,
