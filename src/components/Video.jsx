@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 
 export default function Video({ video }) {
+    // The MP4 and MP3 are separate files, so the audio must follow the video controls.
     const audioRef = useRef(null);
     // likes tracks the current number of likes shown on the video.
     const [likes, setLikes] = useState(video?.likes || 0);
@@ -28,13 +29,20 @@ export default function Video({ video }) {
                     poster={video.thumbnail}
                     controls
                     style={styles.videoPlayer}
-                    onPlay={() => audioRef.current?.play()}
+                    // Start and stop the separate audio track with the video.
+                    onPlay={() => {
+                        audioRef.current?.play().catch((error) => {
+                            console.error('Audio playback error:', error);
+                        });
+                    }}
                     onPause={() => audioRef.current?.pause()}
+                    // Keep both tracks at the same position after the user seeks.
                     onSeeked={(event) => {
                         if (audioRef.current) {
                             audioRef.current.currentTime = event.currentTarget.currentTime;
                         }
                     }}
+                    // Reset the audio so replay starts from the beginning.
                     onEnded={() => {
                         if (audioRef.current) {
                             audioRef.current.pause();
