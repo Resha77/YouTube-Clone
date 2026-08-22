@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function Video({ video }) {
+    // The MP4 and MP3 are separate files, so the audio must follow the video controls.
+    const audioRef = useRef(null);
     // likes tracks the current number of likes shown on the video.
     const [likes, setLikes] = useState(video?.likes || 0);
 
@@ -13,6 +15,9 @@ export default function Video({ video }) {
         setLikes(prev => isLiked ? prev - 1 : prev + 1);
     };
 
+    const videoSource = video?.videoUrl || video?.video_url || video?.url || '/subscriptions/Video.mp4';
+    const audioSource = video?.audioUrl || video?.audio_url || video?.audio || '/subscriptions/Audio.mp3';
+
     // If no video information is passed in, show a simple fallback message.
     if (!video) return <div style={styles.notFound}>No video selected</div>;
 
@@ -21,12 +26,36 @@ export default function Video({ video }) {
             {/* The actual video player. It uses the video's URL and poster image. */}
             <div style={styles.videoWrapper}>
                 <video
-                    src={video.url}
                     poster={video.thumbnail}
                     controls
-                    autoPlay
                     style={styles.videoPlayer}
-                />
+                    // Start and stop the separate audio track with the video.
+                    onPlay={() => {
+                        audioRef.current?.play().catch((error) => {
+                            console.error('Audio playback error:', error);
+                        });
+                    }}
+                    onPause={() => audioRef.current?.pause()}
+                    // Keep both tracks at the same position after the user seeks.
+                    onSeeked={(event) => {
+                        if (audioRef.current) {
+                            audioRef.current.currentTime = event.currentTarget.currentTime;
+                        }
+                    }}
+                    // Reset the audio so replay starts from the beginning.
+                    onEnded={() => {
+                        if (audioRef.current) {
+                            audioRef.current.pause();
+                            audioRef.current.currentTime = 0;
+                        }
+                    }}
+                >
+                    {videoSource && <source src={videoSource} type="video/mp4" />}
+                    Your browser does not support HTML video.
+                </video>
+                <audio ref={audioRef} preload="auto">
+                    {audioSource && <source src={audioSource} type="audio/mpeg" />}
+                </audio>
             </div>
 
             {/* Title and metadata section for the video. */}
@@ -36,7 +65,7 @@ export default function Video({ video }) {
                 {/* Channel row: avatar, name, subscriber count, and subscribe button. */}
                 <div style={styles.channelInfo}>
                     <img 
-                        src={video.channelAvatar || 'https://via.placeholder.com/40'} 
+                        src={video.channelAvatar} 
                         alt={video.channelName} 
                         style={styles.avatar} 
                     />
@@ -84,6 +113,7 @@ const styles = {
         padding: '16px',
         color: '#ffffff',
         boxSizing: 'border-box',
+        cursor: 'default',
     },
     videoWrapper: {
         width: '100%',
@@ -98,10 +128,12 @@ const styles = {
         objectFit: 'contain',
     },
     title: {
-        fontSize: '20px',
+        fontSize: '32px',
         fontWeight: 'bold',
-        margin: '12px 0',
-        lineHeight: '1.4',
+        margin: '16px 0',
+        padding: '16px 0',
+        width: '100%',
+        textAlign: 'left',
     },
     metaRow: {
         display: 'flex',

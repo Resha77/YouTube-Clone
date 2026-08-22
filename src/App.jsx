@@ -23,7 +23,10 @@ function App() {
   return (
     <div className="app" style={styles.app}>
       {/* Top navigation bar. It receives the sidebar toggle function as a prop. */}
-      <Navbar onToggleSidebar={handleToggleSidebar} />
+      <Navbar
+        onToggleSidebar={handleToggleSidebar}
+        onYouTubeLogoClick={handleYouTubeLogoClick}
+      />
 
       <div className="app-body" style={styles.appBody}>
         {/* Sidebar width changes depending on the collapsed state. */}
@@ -63,6 +66,7 @@ const styles = {
     minWidth: 0,
     overflowY: 'auto',
     height: '100%',
+    cursor: 'pointer',
   },
 };
 
