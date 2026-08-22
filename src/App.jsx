@@ -11,6 +11,8 @@ import reshaThumbnail from './assets/subscriptions/ReshaKoju.jpg'
 import sanyamThumbnail from './assets/subscriptions/Sanyam.jpg'
 
 function App() {
+  // Tracks whether the sidebar is collapsed or expanded.
+  // This state is shared with the sidebar and the menu button in the navbar.
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const videos = [
@@ -53,14 +55,18 @@ function App() {
   ];
 
 
+  // Toggle sidebar open/closed when the menu button is clicked.
   const handleToggleSidebar = () => {
     setIsSidebarCollapsed(prev => !prev);
   };
 
   return (
     <div className="app">
+      {/* Top navigation bar. It receives the sidebar toggle function as a prop. */}
       <Navbar onToggleSidebar={handleToggleSidebar} />
+
       <div className="app-body" style={styles.appBody}>
+        {/* Sidebar width changes depending on the collapsed state. */}
         <Sidebar isCollapsed={isSidebarCollapsed} />
 
         {/* <main style={styles.mainContent}>
