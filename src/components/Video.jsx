@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function Video({ video }) {
+    const audioRef = useRef(null);
     // likes tracks the current number of likes shown on the video.
     const [likes, setLikes] = useState(video?.likes || 0);
 
@@ -13,6 +14,9 @@ export default function Video({ video }) {
         setLikes(prev => isLiked ? prev - 1 : prev + 1);
     };
 
+    const videoSource = video?.videoUrl || video?.video_url || video?.url || '/subscriptions/Video.mp4';
+    const audioSource = video?.audioUrl || video?.audio_url || video?.audio || '/subscriptions/Audio.mp3';
+
     // If no video information is passed in, show a simple fallback message.
     if (!video) return <div style={styles.notFound}>No video selected</div>;
 
@@ -21,12 +25,29 @@ export default function Video({ video }) {
             {/* The actual video player. It uses the video's URL and poster image. */}
             <div style={styles.videoWrapper}>
                 <video
-                    src={video.url}
                     poster={video.thumbnail}
                     controls
-                    autoPlay
                     style={styles.videoPlayer}
-                />
+                    onPlay={() => audioRef.current?.play()}
+                    onPause={() => audioRef.current?.pause()}
+                    onSeeked={(event) => {
+                        if (audioRef.current) {
+                            audioRef.current.currentTime = event.currentTarget.currentTime;
+                        }
+                    }}
+                    onEnded={() => {
+                        if (audioRef.current) {
+                            audioRef.current.pause();
+                            audioRef.current.currentTime = 0;
+                        }
+                    }}
+                >
+                    {videoSource && <source src={videoSource} type="video/mp4" />}
+                    Your browser does not support HTML video.
+                </video>
+                <audio ref={audioRef} preload="auto">
+                    {audioSource && <source src={audioSource} type="audio/mpeg" />}
+                </audio>
             </div>
 
             {/* Title and metadata section for the video. */}
@@ -84,6 +105,7 @@ const styles = {
         padding: '16px',
         color: '#ffffff',
         boxSizing: 'border-box',
+        cursor: 'default',
     },
     videoWrapper: {
         width: '100%',
@@ -98,12 +120,12 @@ const styles = {
         objectFit: 'contain',
     },
     title: {
-        fontSize: '20px',
+        fontSize: '32px',
         fontWeight: 'bold',
-        margin: '12px 0',
-        lineHeight: '1.4',
-        padding: '0',
+        margin: '16px 0',
+        padding: '16px 0',
         width: '100%',
+        textAlign: 'left',
     },
     metaRow: {
         display: 'flex',
