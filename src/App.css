@@ -1,3 +1,12 @@
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 28px 16px;
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
 .suggestion-item:hover {
   background-color: #333333;
 }
