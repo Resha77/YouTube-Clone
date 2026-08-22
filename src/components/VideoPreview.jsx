@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function VideoPreview({ onVideoClick }) {
     const [videos, setVideos] = useState([]);
@@ -89,8 +89,6 @@ const styles = {
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
         textAlign: 'left',
-        flex: 1,
-        minWidth: 0,
     },
     title: {
         fontSize: '16px',
