@@ -36,7 +36,7 @@ export default function Video({ video }) {
                 {/* Channel row: avatar, name, subscriber count, and subscribe button. */}
                 <div style={styles.channelInfo}>
                     <img 
-                        src={video.channelAvatar || 'https://via.placeholder.com/40'} 
+                        src={video.channelAvatar} 
                         alt={video.channelName} 
                         style={styles.avatar} 
                     />
@@ -102,6 +102,8 @@ const styles = {
         fontWeight: 'bold',
         margin: '12px 0',
         lineHeight: '1.4',
+        padding: '0',
+        width: '100%',
     },
     metaRow: {
         display: 'flex',
