@@ -6,9 +6,9 @@ import './App.css'
 import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
 import VideoPreview from './components/VideoPreview'
-import jerryThumbnail from './assets/subscriptions/Jerry.jpg'
-import reshaThumbnail from './assets/subscriptions/ReshaKoju.jpg'
-import sanyamThumbnail from './assets/subscriptions/Sanyam.jpg'
+import jerryThumbnail from '../public/subscriptions/Jerry.jpg'
+import reshaThumbnail from '../public/subscriptions/ReshaKoju.jpg'
+import sanyamThumbnail from '../public/subscriptions/Sanyam.jpg'
 
 function App() {
   // Tracks whether the sidebar is collapsed or expanded.
