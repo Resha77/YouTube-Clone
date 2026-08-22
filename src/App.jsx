@@ -1,50 +1,13 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
 import VideoPreview from './components/VideoPreview'
-import jerryThumbnail from '../public/subscriptions/Jerry.jpg'
-import reshaThumbnail from '../public/subscriptions/ReshaKoju.jpg'
-import sanyamThumbnail from '../public/subscriptions/Sanyam.jpg'
 
 function App() {
   // Tracks whether the sidebar is collapsed or expanded.
   // This state is shared with the sidebar and the menu button in the navbar.
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-  const videos = [
-    {
-      id: 1,
-      title: 'Jerry Poked My Eye With Her Nail Today!',
-      thumbnail: jerryThumbnail,
-      channelName: 'Jerry Doe',
-      channelAvatar: jerryThumbnail,
-      views: '2.5M',
-      uploadedAt: '5 days ago',
-    },
-    {
-      id: 2,
-      title: 'A Day at Kamalpokhari',
-      thumbnail: reshaThumbnail,
-      channelName: 'Resha Koju',
-      channelAvatar: reshaThumbnail,
-      views: '840K',
-      uploadedAt: '1 week ago',
-    },
-    {
-      id: 3,
-      title: 'Another Day at Kamalpokhari',
-      thumbnail: sanyamThumbnail,
-      channelName: 'Sanyam',
-      channelAvatar: sanyamThumbnail,
-      views: '310K',
-      uploadedAt: '2 weeks ago',
-    },
-  ];
-
 
   // Toggle sidebar open/closed when the menu button is clicked.
   const handleToggleSidebar = () => {
@@ -52,7 +15,7 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className="app" style={styles.app}>
       {/* Top navigation bar. It receives the sidebar toggle function as a prop. */}
       <Navbar onToggleSidebar={handleToggleSidebar} />
 
@@ -65,11 +28,7 @@ function App() {
         </main> */}
 
         <main style={styles.mainContent}>
-          <div className="video-grid">
-            {videos.map((video) => (
-              <VideoPreview key={video.id} video={video} />
-            ))}
-          </div>
+          <VideoPreview />
         </main>
 
       </div>
@@ -78,14 +37,20 @@ function App() {
 }
 
 const styles = {
+  app: {
+    width: '100%'
+  },
   appBody: {
     display: 'flex',
-    minHeight: 'calc(100vh - 56px)',
+    height: 'calc(100vh - 56px)',
+    minHeight: 0,
     backgroundColor: '#0f0f0f',
   },
   mainContent: {
     flex: 1,
+    minWidth: 0,
     overflowY: 'auto',
+    height: '100%',
   },
 };
 

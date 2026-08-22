@@ -26,7 +26,9 @@ function VideoPreview() {
                             style={styles.avatar}
                         />
                         <div style={styles.textContainer}>
-                            <h4 style={styles.title}>{video.title}</h4>
+                            <h4 style={styles.title}>
+                                {(video.title.length > 50) ? `${video.title.substring(0, 50)}...` : video.title}
+                            </h4>
                             <p style={styles.channel}>{video.channelName}</p>
                             <span style={styles.meta}>
                                 {video.views} • {video.uploadedAt}
@@ -43,10 +45,11 @@ const styles = {
     container: {
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-        gap: '16px',
+        rowGap: '80px',
+        columnGap: '16px',
+        margin: '32px 16px',
     },
     card: {
-        minWidth: 0,
         color: '#ffffff',
     },
     thumbnail: {
