@@ -20,10 +20,6 @@ function App() {
     setSelectedVideo(video);
   };
 
-  const handleYouTubeLogoClick = () => {
-    setSelectedVideo(null);
-  };
-
   return (
     <div className="app" style={styles.app}>
       {/* Top navigation bar. It receives the sidebar toggle function as a prop. */}
@@ -42,7 +38,9 @@ function App() {
 
         <main style={styles.mainContent}>
           {selectedVideo ? (
-            <Video video={selectedVideo} />
+            <>
+              <Video video={selectedVideo} />
+            </>
           ) : (
             <VideoPreview onVideoClick={handleVideoClick} />
           )}

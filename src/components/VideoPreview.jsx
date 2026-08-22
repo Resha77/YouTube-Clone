@@ -17,14 +17,14 @@ function VideoPreview({ onVideoClick }) {
                     key={video.id}
                     style={styles.card}
                     onClick={() => onVideoClick(video)}
-                    role="button"
-                    tabIndex={0}
                     onKeyDown={(event) => {
                         if (event.key === 'Enter' || event.key === ' ') {
                             event.preventDefault();
                             onVideoClick(video);
                         }
                     }}
+                    role="button"
+                    tabIndex={0}
                 >
                     <img
                         src={video.thumbnail}
