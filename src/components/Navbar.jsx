@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import youtubeLogo from '../assets/youtube-logo-icon.webp';
+import React, { useState, useEffect } from 'react';
+import youtubeLogo from '../assets/youtube-logo-icon.svg';
 import resha from '../assets/subscriptions/ReshaKoju.jpg';
 
 
@@ -89,7 +89,7 @@ const styles = {
         cursor: 'pointer',
     },
     logoImage: {
-        height: '100px',
+        height: '24px',
         objectFit: 'contain',
     },
     centerSection: {
