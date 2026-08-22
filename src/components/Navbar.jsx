@@ -4,7 +4,7 @@ import resha from '../../public/subscriptions/ReshaKoju.jpg';
 import { initializeTrie } from '../utils/TrieSearch';
 
 
-export default function Navbar({ onToggleSidebar }) {
+export default function Navbar({ onToggleSidebar, onYouTubeLogoClick }) {
     // searchQuery stores the text the user types into the search box.
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -62,9 +62,12 @@ export default function Navbar({ onToggleSidebar }) {
                         <path d="M96 160C96 142.3 110.3 128 128 128L512 128C529.7 128 544 142.3 544 160C544 177.7 529.7 192 512 192L128 192C110.3 192 96 177.7 96 160zM96 320C96 302.3 110.3 288 128 288L512 288C529.7 288 544 302.3 544 320C544 337.7 529.7 352 512 352L128 352C110.3 352 96 337.7 96 320zM544 480C544 497.7 529.7 512 512 512L128 512C110.3 512 96 497.7 96 480C96 462.3 110.3 448 128 448L512 448C529.7 448 544 462.3 544 480z" />
                     </svg>
                 </button>
-                <div style={styles.logo}>
+                <button
+                    type="button"
+                    onClick={onYouTubeLogoClick}
+                    style={styles.logo}>
                     <img src={youtubeLogo} alt="YouTube Logo" style={styles.logoImage} />
-                </div>
+                </button>
             </div>
 
             {/* Middle section: includes the search field and suggestion dropdown */}
@@ -84,7 +87,7 @@ export default function Navbar({ onToggleSidebar }) {
                             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                         </svg>
                     </button>
-                    
+
                     {/* Show a list of matching searches below the input when the user types. */}
                     {showSuggestions && suggestions.length > 0 && (
                         <div style={styles.suggestionsDropdown}>
@@ -97,11 +100,11 @@ export default function Navbar({ onToggleSidebar }) {
                                 >
                                     <svg viewBox="0 0 24 24" style={styles.suggestionIcon}>
                                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                    </svg>
-                                <div style={styles.suggestionText}>
-                                    <div style={styles.suggestionTitle}>{suggestion.title}</div>
+                                    </svg>
+                                    <div style={styles.suggestionText}>
+                                        <div style={styles.suggestionTitle}>{suggestion.title}</div>
+                                    </div>
                                 </div>
-                            </div>
                             ))}
                         </div>
                     )}
@@ -161,7 +164,6 @@ const styles = {
         gap: '12px',
         padding: '10px 16px',
         color: '#ffffff',
-        cursor: 'pointer',
     },
     suggestionIcon: {
         width: '20px',
@@ -177,6 +179,9 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         cursor: 'pointer',
+        background: 'transparent',
+        border: 'none',
+        padding: 0,
     },
     logoImage: {
         height: '24px',

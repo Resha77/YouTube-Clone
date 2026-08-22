@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function VideoPreview() {
+function VideoPreview({ onVideoClick }) {
     const [videos, setVideos] = useState([]);
 
     useEffect(() => {
@@ -13,7 +13,19 @@ function VideoPreview() {
     return (
         <div style={styles.container}>
             {videos.map((video) => (
-                <div key={video.id} style={styles.card}>
+                <div
+                    key={video.id}
+                    style={styles.card}
+                    onClick={() => onVideoClick(video)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            onVideoClick(video);
+                        }
+                    }}
+                >
                     <img
                         src={video.thumbnail}
                         alt={video.title}
@@ -51,6 +63,7 @@ const styles = {
     },
     card: {
         color: '#ffffff',
+        cursor: 'pointer',
     },
     thumbnail: {
         width: '100%',
