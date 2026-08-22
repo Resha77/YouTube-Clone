@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import youtubeLogo from '../assets/youtube-logo-icon.svg';
-import resha from '../assets/subscriptions/ReshaKoju.jpg';
+import resha from '../../public/subscriptions/ReshaKoju.jpg';
 import { initializeTrie } from '../utils/TrieSearch';
 
 

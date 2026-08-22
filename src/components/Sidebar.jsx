@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import reshaKoju from '../assets/subscriptions/ReshaKoju.jpg';
-import jerry from '../assets/subscriptions/Jerry.jpg';
-import sanyam from '../assets/subscriptions/Sanyam.jpg';
+import reshaKoju from '../../public/subscriptions/ReshaKoju.jpg';
+import jerry from '../../public/subscriptions/Jerry.jpg';
+import sanyam from '../../public/subscriptions/Sanyam.jpg';
 
 // Demo subscription list used until real data is connected.
 // This simulates users/channels that appear in the sidebar.
