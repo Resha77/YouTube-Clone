@@ -28,7 +28,7 @@ function App() {
     setSearchTitle('');
   };
 
-  const [history, setHistory] = useState(() =>{
+  const [history, setHistory] = useState(() => {
     const saved = localStorage.getItem('watchHistory');
     return saved ? JSON.parse(saved) : [];
   });
@@ -42,6 +42,18 @@ function App() {
       return updated;
     });
   };
+
+
+  const [currentView, setCurrentView] = useState('home');
+
+  //Pass navigation callbacks to Sidebar items
+  <Sidebar isCollapsed={isSidebarCollapsed}
+    onNavigate={(view) => {
+      setCurrentView(view);
+      setSelectedVideo(null); //Clear active video on view change
+    }}>
+  </Sidebar>
+
 
   return (
     <div className="app" style={styles.app}>
