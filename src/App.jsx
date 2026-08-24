@@ -20,11 +20,27 @@ function App() {
 
   const handleVideoClick = (video) => {
     setSelectedVideo(video);
+    addToHistory(video);  //Record to history state
   };
 
   const handleYouTubeLogoClick = () => {
     setSelectedVideo(null);
     setSearchTitle('');
+  };
+
+  const [history, setHistory] = useState(() =>{
+    const saved = localStorage.getItem('watchHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const addToHistory = (video) => {
+    setHistory((prev) => {
+      //Remove existing duplicate entries for the same video
+      const filtered = prev.filter((item) => item.id !== video.id);
+      const updated = [video, ...filtered]; //Place most recent at the top
+      localStorage.setItem('watchHistory', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
