@@ -4,6 +4,8 @@ import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
 import VideoPreview from './components/VideoPreview'
 import Video from './components/Video'
+import HistoryPage from './components/HistoryPage';
+
 
 function App() {
   // Tracks whether the sidebar is collapsed or expanded.
@@ -13,6 +15,12 @@ function App() {
   // Stores the exact title selected from the navbar suggestions.
   const [searchTitle, setSearchTitle] = useState('');
 
+  const [currentView, setCurrentView] = useState('home'); //'home' | history
+  const [history, setHistory] = useState(() => {
+    const saved = localStorage.getItem('watchHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   // Toggle sidebar open/closed when the menu button is clicked.
   const handleToggleSidebar = () => {
     setIsSidebarCollapsed(prev => !prev);
@@ -20,41 +28,25 @@ function App() {
 
   const handleVideoClick = (video) => {
     setSelectedVideo(video);
-    addToHistory(video);  //Record to history state
-  };
-
-  const handleYouTubeLogoClick = () => {
-    setSelectedVideo(null);
-    setSearchTitle('');
-  };
-
-  const [history, setHistory] = useState(() => {
-    const saved = localStorage.getItem('watchHistory');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const addToHistory = (video) => {
     setHistory((prev) => {
-      //Remove existing duplicate entries for the same video
-      const filtered = prev.filter((item) => item.id !== video.id);
-      const updated = [video, ...filtered]; //Place most recent at the top
+      const filtered = prev.filter((v) => v.id !== video.id);
+      const updated = [video, ...filtered];
       localStorage.setItem('watchHistory', JSON.stringify(updated));
       return updated;
     });
   };
 
+  const handleYouTubeLogoClick = () => {
+    setSelectedVideo(null);
+    setSearchTitle('');
+    setCurrentView('home');
+  };
 
-  const [currentView, setCurrentView] = useState('home');
-
-  //Pass navigation callbacks to Sidebar items
-  <Sidebar isCollapsed={isSidebarCollapsed}
-    onNavigate={(view) => {
-      setCurrentView(view);
-      setSelectedVideo(null); //Clear active video on view change
-    }}>
-  </Sidebar>
-
-
+  const handleNavigate = (view) => {
+    setCurrentView(view);
+    setSelectedVideo(null);
+  };
+  
   return (
     <div className="app" style={styles.app}>
       {/* Top navigation bar. It receives the sidebar toggle function as a prop. */}
@@ -70,7 +62,10 @@ function App() {
 
       <div className="app-body" style={styles.appBody}>
         {/* Sidebar width changes depending on the collapsed state. */}
-        <Sidebar isCollapsed={isSidebarCollapsed} />
+        <Sidebar
+          isCollapsed={isSidebarCollapsed}
+          onNavigate={handleNavigate}
+        />
 
         {/* <main style={styles.mainContent}>
           <Video video={sampleVideo} />
@@ -79,6 +74,8 @@ function App() {
         <main style={styles.mainContent}>
           {selectedVideo ? (
             <Video video={selectedVideo} />
+          ) : currentView === 'history' ? (
+            <HistoryPage history={history} onVideoClick={handleVideoClick} />
           ) : (
             <VideoPreview onVideoClick={handleVideoClick} searchTitle={searchTitle} />
           )}

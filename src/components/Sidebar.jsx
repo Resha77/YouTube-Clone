@@ -21,7 +21,7 @@ const mockData = [
 
 // Sidebar component
 // It receives isCollapsed from App.jsx and decides whether to show a full or compact layout.
-export default function Sidebar({ isCollapsed }) {
+export default function Sidebar({ isCollapsed, onNavigate }) {
     /* isCollapsed is a boolean prop that determines whether the sidebar is collapsed or expanded.
        The prop is passed down from the parent component (App.jsx).
     */
@@ -47,7 +47,8 @@ export default function Sidebar({ isCollapsed }) {
                     <path d="M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z" />
                 </svg>
             ),
-            label: 'Home'
+            label: 'Home',
+            onClick: () => onNavigate('home'),
         },
         {
             icon: (
@@ -75,7 +76,8 @@ export default function Sidebar({ isCollapsed }) {
                     viewBox="0 0 640 640"
                     style={{ width: '16px', height: '16px', fill: 'currentColor' }}>
                     <path d="M320 128C263.2 128 212.1 152.7 176.9 192L224 192C241.7 192 256 206.3 256 224C256 241.7 241.7 256 224 256L96 256C78.3 256 64 241.7 64 224L64 96C64 78.3 78.3 64 96 64C113.7 64 128 78.3 128 96L128 150.7C174.9 97.6 243.5 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C233 576 156.1 532.6 109.9 466.3C99.8 451.8 103.3 431.9 117.8 421.7C132.3 411.5 152.2 415.1 162.4 429.6C197.2 479.4 254.8 511.9 320 511.9C426 511.9 512 425.9 512 319.9C512 213.9 426 128 320 128z" /></svg>
-            ), label: 'History'
+            ), label: 'History',
+            onClick: () => onNavigate('history'),
         },
         {
             icon: (
@@ -131,6 +133,7 @@ export default function Sidebar({ isCollapsed }) {
                 {mainNav.map((item, index) => (
                     <div
                         key={index}
+                        onClick={item.onClick}
                         style={{
                             ...styles.navItem,
                             flexDirection: isCollapsed ? 'column' : 'row',
@@ -159,7 +162,9 @@ export default function Sidebar({ isCollapsed }) {
                     {secondaryNav.map((item, index) => (
                         // .map() loops through the array and renders one row per item.
 
-                        <div key={index} style={{
+                        <div key={index}
+                        onClick={item.onClick}
+                        style={{
                             ...styles.navItem,
                             padding: isCollapsed ? '16px 0' : '6px 12px',
                         }
