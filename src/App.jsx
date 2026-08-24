@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import VideoPreview from './components/VideoPreview'
 import Video from './components/Video'
 import HistoryPage from './components/HistoryPage';
+import PlaylistPage from './components/PlaylistPage';
 
 
 function App() {
@@ -15,9 +16,13 @@ function App() {
   // Stores the exact title selected from the navbar suggestions.
   const [searchTitle, setSearchTitle] = useState('');
 
-  const [currentView, setCurrentView] = useState('home'); //'home' | history
+  const [currentView, setCurrentView] = useState('home'); //'home' | history | playlist
   const [history, setHistory] = useState(() => {
     const saved = localStorage.getItem('watchHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [playlists, setPlaylists] = useState(() => {
+    const saved = localStorage.getItem('playlists');
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -46,6 +51,30 @@ function App() {
     setCurrentView(view);
     setSelectedVideo(null);
   };
+
+  const handleSaveToPlaylist = (playlistName, video) => {
+    const name = playlistName.trim();
+    if (!name) return;
+
+    setPlaylists((previousPlaylists) => {
+      const existingPlaylist = previousPlaylists.find(
+        (playlist) => playlist.name.toLowerCase() === name.toLowerCase()
+      );
+      const updatedPlaylists = existingPlaylist
+        ? previousPlaylists.map((playlist) => playlist.id === existingPlaylist.id
+          ? {
+              ...playlist,
+              videos: playlist.videos.some((savedVideo) => savedVideo.id === video.id)
+                ? playlist.videos
+                : [...playlist.videos, video],
+            }
+          : playlist)
+        : [...previousPlaylists, { id: crypto.randomUUID(), name, videos: [video] }];
+
+      localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
+      return updatedPlaylists;
+    });
+  };
   
   return (
     <div className="app" style={styles.app}>
@@ -73,9 +102,11 @@ function App() {
 
         <main style={styles.mainContent}>
           {selectedVideo ? (
-            <Video video={selectedVideo} />
+            <Video video={selectedVideo} onSaveToPlaylist={handleSaveToPlaylist} playlists={playlists} />
           ) : currentView === 'history' ? (
             <HistoryPage history={history} onVideoClick={handleVideoClick} />
+          ) : currentView === 'playlist' ? (
+            <PlaylistPage playlists={playlists} onVideoClick={handleVideoClick} />
           ) : (
             <VideoPreview onVideoClick={handleVideoClick} searchTitle={searchTitle} />
           )}
