@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import youtubeLogo from '../assets/youtube-logo-icon.svg';
 import resha from '../../public/subscriptions/ReshaKoju.jpg';
 import { initializeTrie } from '../utils/TrieSearch';
 
 
-export default function Navbar({ onToggleSidebar, onYouTubeLogoClick }) {
+export default function Navbar({ onToggleSidebar, onYouTubeLogoClick, onSuggestionSelect }) {
     // searchQuery stores the text the user types into the search box.
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -20,8 +20,22 @@ export default function Navbar({ onToggleSidebar, onYouTubeLogoClick }) {
     // Create the trie once when the navbar is loaded.
     // This lets the app search suggestions without scanning a huge list each time.
     useEffect(() => {
-        const initializedTrie = initializeTrie();
-        setTrie(initializedTrie);
+        let isMounted = true;
+
+        const loadTrie = async () => {
+            try {
+                const initializedTrie = await initializeTrie();
+                if (isMounted) setTrie(initializedTrie);
+            } catch (error) {
+                console.error('Trie initialization error:', error);
+            }
+        };
+
+        loadTrie();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // When the user types, update the keyword and find matching suggestions.
@@ -43,7 +57,8 @@ export default function Navbar({ onToggleSidebar, onYouTubeLogoClick }) {
     const handleSuggestionClick = (suggestion) => {
         setSearchQuery(suggestion.title);
         setShowSuggestions(false);
-        console.log('Selected video:', suggestion);
+        // Tell the app to show only videos with this exact title.
+        onSuggestionSelect(suggestion.title);
     };
 
     // Handle the form submit, usually when the user presses Enter or clicks search.
