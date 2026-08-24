@@ -13,15 +13,19 @@ class TrieNode {
 export class Trie {
   constructor() {
     this.root = new TrieNode();
+    this.words = new Set();
   }
 
   // Insert a word into the trie.
   // data can be any related information, such as a video object.
   insert(word, data = null) {
-    let node = this.root;
-    const lowerWord = word.toLowerCase();
+    const normalizedWord = word.trim().toLowerCase();
+    if (!normalizedWord || this.words.has(normalizedWord)) return;
 
-    for (let char of lowerWord) {
+    let node = this.root;
+    this.words.add(normalizedWord);
+
+    for (let char of normalizedWord) {
       if (!node.children[char]) {
         node.children[char] = new TrieNode();
       }
@@ -70,26 +74,22 @@ export class Trie {
   // Remove all data from the trie.
   clear() {
     this.root = new TrieNode();
+    this.words.clear();
   }
 }
 
 // Sample video database used for autocomplete suggestions.
-export const videosDatabase = [
-  { id: 1, title: 'React Tutorial for Beginners', channel: 'Tech Academy' },
-  { id: 2, title: 'React Hooks Deep Dive', channel: 'Dev Masters' },
-  { id: 3, title: 'React Context API Explained', channel: 'Code School' },
-  { id: 4, title: 'Vite.js Setup and Configuration', channel: 'Frontend Pro' },
-  { id: 5, title: 'Vue.js vs React Comparison', channel: 'Web Dev Today' },
-  { id: 6, title: 'JavaScript Fundamentals', channel: 'Programming Hub' },
-  { id: 7, title: 'CSS Flexbox Mastery', channel: 'Style Guide' },
-  { id: 8, title: 'Node.js Express Server', channel: 'Backend Masters' },
-];
+export const videosDatabase = fetch('http://localhost:5000/api/videos')
+  .then((res) => res.json())
+  .then((data) => data)
+  .catch((err) => console.error('Fetch error:', err));
 
 // Build the trie from the sample database so the navbar can search quickly.
-export function initializeTrie() {
+export async function initializeTrie() {
+  const response = await fetch('http://localhost:5000/api/videos');
+  const videos = await response.json();
+
   const trie = new Trie();
-  videosDatabase.forEach(video => {
-    trie.insert(video.title, video);
-  });
+  videos.forEach((video) => trie.insert(video.title, video));
   return trie;
 }
