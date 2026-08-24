@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-export default function Video({ video }) {
+export default function Video({ video, onSaveToPlaylist, playlists = [] }) {
     // The MP4 and MP3 are separate files, so the audio must follow the video controls.
     const audioRef = useRef(null);
     // likes tracks the current number of likes shown on the video.
@@ -17,6 +17,7 @@ export default function Video({ video }) {
 
     const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
     const [playlistName, setPlaylistName] = useState('');
+    const [selectedPlaylist, setSelectedPlaylist] = useState('');
 
     const handleSave = () => {
         setIsSaveDialogOpen(true);
@@ -24,10 +25,12 @@ export default function Video({ video }) {
 
     const handlePlaylistSubmit = (event) => {
         event.preventDefault();
-        if (!playlistName.trim()) return;
+        const name = playlistName.trim() || selectedPlaylist;
+        if (!name) return;
 
-        console.log(`Saved "${video.title}" to playlist "${playlistName.trim()}"`);
+        onSaveToPlaylist(name, video);
         setPlaylistName('');
+        setSelectedPlaylist('');
         setIsSaveDialogOpen(false);
     };
 
@@ -130,8 +133,27 @@ export default function Video({ video }) {
                     >
                         <h2 id="playlist-dialog-title" style={styles.modalTitle}>Save to playlist</h2>
                         <form onSubmit={handlePlaylistSubmit}>
-                            <label htmlFor="playlist-name" style={styles.modalLabel}>Playlist name</label>
-                            <input
+                            {playlists.length > 0 && (
+                                <>
+                                    <label htmlFor="playlist-select" style={styles.modalLabel}>Choose a playlist</label>
+                                    <select
+                                        id="playlist-select"
+                                        value={selectedPlaylist}
+                                        onChange={(event) => {
+                                            setSelectedPlaylist(event.target.value);
+                                            setPlaylistName('');
+                                        }}
+                                        style={styles.playlistInput}
+                                    >
+                                        <option value="">Create a new playlist</option>
+                                        {playlists.map((playlist) => (
+                                            <option key={playlist.id} value={playlist.name}>{playlist.name}</option>
+                                        ))}
+                                    </select>
+                                </>
+                            )}
+                            {!selectedPlaylist && <label htmlFor="playlist-name" style={styles.modalLabel}>Playlist name</label>}
+                            {!selectedPlaylist && <input
                                 id="playlist-name"
                                 type="text"
                                 value={playlistName}
@@ -139,7 +161,7 @@ export default function Video({ video }) {
                                 placeholder="Enter a playlist name"
                                 autoFocus
                                 style={styles.playlistInput}
-                            />
+                            />}
                             <div style={styles.modalActions}>
                                 <button
                                     type="button"
@@ -149,7 +171,7 @@ export default function Video({ video }) {
                                 <button
                                     type="submit"
                                     style={styles.confirmBtn}
-                                    disabled={!playlistName.trim()}
+                                    disabled={!playlistName.trim() && !selectedPlaylist}
                                 >Save</button>
                             </div>
                         </form>
