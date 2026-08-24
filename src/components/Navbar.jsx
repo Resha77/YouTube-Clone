@@ -4,7 +4,7 @@ import resha from '../../public/subscriptions/ReshaKoju.jpg';
 import { initializeTrie } from '../utils/TrieSearch';
 
 
-export default function Navbar({ onToggleSidebar, onYouTubeLogoClick }) {
+export default function Navbar({ onToggleSidebar, onYouTubeLogoClick, onSuggestionSelect }) {
     // searchQuery stores the text the user types into the search box.
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -57,8 +57,8 @@ export default function Navbar({ onToggleSidebar, onYouTubeLogoClick }) {
     const handleSuggestionClick = (suggestion) => {
         setSearchQuery(suggestion.title);
         setShowSuggestions(false);
-        
-        console.log('Selected video:', suggestion);
+        // Tell the app to show only videos with this exact title.
+        onSuggestionSelect(suggestion.title);
     };
 
     // Handle the form submit, usually when the user presses Enter or clicks search.

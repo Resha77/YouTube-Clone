@@ -10,6 +10,8 @@ function App() {
   // This state is shared with the sidebar and the menu button in the navbar.
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  // Stores the exact title selected from the navbar suggestions.
+  const [searchTitle, setSearchTitle] = useState('');
 
   // Toggle sidebar open/closed when the menu button is clicked.
   const handleToggleSidebar = () => {
@@ -22,6 +24,7 @@ function App() {
 
   const handleYouTubeLogoClick = () => {
     setSelectedVideo(null);
+    setSearchTitle('');
   };
 
   return (
@@ -30,6 +33,11 @@ function App() {
       <Navbar
         onToggleSidebar={handleToggleSidebar}
         onYouTubeLogoClick={handleYouTubeLogoClick}
+        onSuggestionSelect={(title) => {
+          // Return to the list view and apply the selected title filter.
+          setSelectedVideo(null);
+          setSearchTitle(title);
+        }}
       />
 
       <div className="app-body" style={styles.appBody}>
@@ -44,7 +52,7 @@ function App() {
           {selectedVideo ? (
             <Video video={selectedVideo} />
           ) : (
-            <VideoPreview onVideoClick={handleVideoClick} />
+            <VideoPreview onVideoClick={handleVideoClick} searchTitle={searchTitle} />
           )}
         </main>
 

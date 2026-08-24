@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function VideoPreview({ onVideoClick }) {
+function VideoPreview({ onVideoClick, searchTitle }) {
     const [videos, setVideos] = useState([]);
 
     useEffect(() => {
@@ -10,9 +10,14 @@ function VideoPreview({ onVideoClick }) {
             .catch((err) => console.error('Fetch error:', err));
     }, []);
 
+    // Suggestions represent complete titles, so matches must be exact.
+    const filteredVideos = searchTitle
+        ? videos.filter((video) => video.title === searchTitle)
+        : videos;
+
     return (
         <div style={styles.container}>
-            {videos.map((video) => (
+            {filteredVideos.map((video) => (
                 <div
                     key={video.id}
                     style={styles.card}
