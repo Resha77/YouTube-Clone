@@ -1,8 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Queue } from '../utils/PlaylistQueue';
 
 export default function PlaylistPage({ playlists, onVideoClick }) {
     const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+    const [displayedVideos, setDisplayedVideos] = useState([]);
+    const [playlistQueue, setPlaylistQueue] = useState(new Queue());
     const selectedPlaylist = playlists.find((playlist) => playlist.id === selectedPlaylistId);
+
+    useEffect(() => {
+        if (selectedPlaylist) {
+            const queue = Queue.fromVideos(selectedPlaylist.videos);
+            setPlaylistQueue(queue);
+            setDisplayedVideos(queue.toArray());
+        }
+    }, [selectedPlaylist]);
+
+    const handlePlayNext = () => {
+        const nextQueue = playlistQueue.clone();
+        const nextVideo = nextQueue.dequeue();
+
+        if (!nextVideo) return;
+
+        const updatedQueue = new Queue([...nextQueue.toArray(), nextVideo]);
+        setPlaylistQueue(updatedQueue);
+        setDisplayedVideos(updatedQueue.toArray());
+    };
+
+    const handleShuffle = () => {
+        const nextVideos = [...displayedVideos];
+
+        for (let index = nextVideos.length - 1; index > 0; index -= 1) {
+            const randomIndex = Math.floor(Math.random() * (index + 1));
+            [nextVideos[index], nextVideos[randomIndex]] = [nextVideos[randomIndex], nextVideos[index]];
+        }
+
+        const shuffledQueue = new Queue(nextVideos);
+        setPlaylistQueue(shuffledQueue);
+        setDisplayedVideos(nextVideos);
+    };
 
     if (playlists.length === 0) {
         return (
@@ -16,15 +51,28 @@ export default function PlaylistPage({ playlists, onVideoClick }) {
     if (selectedPlaylist) {
         return (
             <div style={styles.container}>
-                <button type="button" style={styles.backButton} onClick={() => setSelectedPlaylistId(null)}>
-                    Back to playlists
-                </button>
+                <div style={styles.actionsRow}>
+                    <button type="button" style={styles.backButton} onClick={() => setSelectedPlaylistId(null)}>
+                        Back to playlists
+                    </button>
+                    {selectedPlaylist.videos.length > 1 && (
+                        <>
+                            <button type="button" style={styles.shuffleButton} onClick={handleShuffle}>
+                                Shuffle
+                            </button>
+                            <button type="button" style={styles.queueButton} onClick={handlePlayNext}>
+                                Next
+                            </button>
+                        </>
+                    )}
+                </div>
+
                 <div style={styles.detailHeader}>
                     <h1 style={styles.heading}>{selectedPlaylist.name}</h1>
                     <span style={styles.count}>{selectedPlaylist.videos.length} video{selectedPlaylist.videos.length === 1 ? '' : 's'}</span>
                 </div>
                 <div style={styles.videoGrid}>
-                    {selectedPlaylist.videos.map((video) => (
+                    {displayedVideos.map((video) => (
                         <button key={video.id} style={styles.videoCard} onClick={() => onVideoClick(video)}>
                             <img src={video.thumbnail} alt="" style={styles.thumbnail} />
                             <span style={styles.videoTitle}>{video.title}</span>
@@ -128,7 +176,7 @@ const styles = {
     },
     
     backButton: { 
-        marginBottom: '22px', 
+        // marginBottom: '22px', 
         padding: '8px 14px', 
         border: '1px solid #606060', 
         borderRadius: '4px', 
@@ -137,10 +185,35 @@ const styles = {
         cursor: 'pointer' 
     },
     
+    actionsRow: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        marginBottom: '22px',
+    },
+
     detailHeader: { 
         display: 'flex', 
         alignItems: 'baseline', 
         gap: '12px' 
+    },
+
+    shuffleButton: {
+        padding: '8px 14px', 
+        border: '1px solid #606060', 
+        borderRadius: '4px', 
+        background: 'transparent', 
+        color: '#fff', 
+        cursor: 'pointer' 
+    },
+
+    queueButton: {
+        padding: '8px 14px', 
+        border: '1px solid #606060', 
+        borderRadius: '4px', 
+        background: 'transparent', 
+        color: '#fff', 
+        cursor: 'pointer' 
     },
     
     videoGrid: { 
